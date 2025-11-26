@@ -1,0 +1,5 @@
+[workspace]
+name = "tic-tac-toe-rust"
+edition = "2024"
+resolver = "3"
+members = ["db", "server"]
