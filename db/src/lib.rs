@@ -1,7 +1,7 @@
 use anyhow::Result;
 use std::env;
 
-mod models;
+pub mod models;
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
 #[derive(Debug, Clone)]

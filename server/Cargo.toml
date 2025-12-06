@@ -4,10 +4,15 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+db = { path = "../db" }
+log = "0.4.20"
 actix-web = "4.12.0"
+chrono = { version = "0.4.42", features = ["serde"] }
+uuid = { version = "1.18.1", features = ["v7", "serde"] }
 anyhow = "1.0.100"
-dotenv = "0.15.0"
+dotenvy = "0.15.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
 tokio = "1.48.0"
-db = { path = "../db" }
+env_logger = { version = "0.11.8", features = ["color"] }
+jsonwebtoken = { version = "10.2.0", features = ["rust_crypto"] }
