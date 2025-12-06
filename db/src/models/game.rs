@@ -21,6 +21,7 @@ pub enum Status {
 pub struct Game {
     pub id: Uuid,
     pub room_name: String,
+    pub created_by: Uuid,
     pub winner_id: Option<Uuid>,
     pub status: Status,
     pub created_at: chrono::DateTime<Utc>,
@@ -34,12 +35,18 @@ pub struct CreateGameResponse {
 }
 
 impl Store {
-    pub async fn create_game(&self, room_name: &String) -> Result<CreateGameResponse> {
-        let game =
-            sqlx::query_as::<_, Game>("INSERT INTO games (room_name) VALUES ($1) RETURNING *")
-                .bind(room_name)
-                .fetch_one(&self.pool)
-                .await?;
+    pub async fn create_game(
+        &self,
+        room_name: &String,
+        created_by: &Uuid,
+    ) -> Result<CreateGameResponse> {
+        let game = sqlx::query_as::<_, Game>(
+            "INSERT INTO games (room_name, created_by) VALUES ($1, $2) RETURNING *",
+        )
+        .bind(room_name)
+        .bind(created_by)
+        .fetch_one(&self.pool)
+        .await?;
 
         info!("Created Game with name {}", &room_name);
         Ok(CreateGameResponse {

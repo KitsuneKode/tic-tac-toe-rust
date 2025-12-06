@@ -5,6 +5,7 @@ CREATE TYPE game_status AS ENUM ('WIN', 'LOSS', 'DRAW', 'NOT_STARTED');
 CREATE TABLE games (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     room_name TEXT NOT NULL,
+    created_by UUID NOT NULL, 
     winner_id UUID,
     status game_status NOT NULL DEFAULT 'NOT_STARTED',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

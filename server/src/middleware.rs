@@ -39,6 +39,8 @@ pub async fn my_middleware(
                 return Err(ErrorUnauthorized("Invalid JWT token"));
             }
         }
+    } else {
+        return Err(ErrorUnauthorized("Missing Authorization header"));
     }
     // Must return the service response
     next.call(req).await

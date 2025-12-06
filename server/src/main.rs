@@ -36,8 +36,8 @@ async fn main() -> Result<()> {
                     .service(web::resource("/signin").route(post().to(sign_in)))
                     .service(web::resource("/signup").route(post().to(sign_up)))
                     .wrap(from_fn(my_middleware))
-                    .service(web::resource("/data").route(get().to(get_user_data)))
                     .service(web::resource("/game").route(post().to(create_game)))
+                    .service(web::resource("/data").route(get().to(get_user_data)))
                     .app_data(web::Data::new(store.clone())),
             )
             .default_service(web::route().to(not_found))
