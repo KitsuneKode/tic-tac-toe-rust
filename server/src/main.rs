@@ -7,6 +7,7 @@ use env_logger::Env;
 use std::env;
 
 use crate::middleware::my_middleware;
+use crate::routes::game::create_game;
 use crate::routes::user::{get_user_data, sign_in, sign_up};
 
 use crate::utils::{get_health, not_found};
@@ -36,6 +37,7 @@ async fn main() -> Result<()> {
                     .service(web::resource("/signup").route(post().to(sign_up)))
                     .wrap(from_fn(my_middleware))
                     .service(web::resource("/data").route(get().to(get_user_data)))
+                    .service(web::resource("/game").route(post().to(create_game)))
                     .app_data(web::Data::new(store.clone())),
             )
             .default_service(web::route().to(not_found))
