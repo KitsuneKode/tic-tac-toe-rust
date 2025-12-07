@@ -1,5 +1,5 @@
 use actix_web::middleware::{Logger, from_fn};
-use actix_web::web::{self, get, post};
+use actix_web::web::{self, get, post, put};
 use actix_web::{App, HttpServer};
 use anyhow::Result;
 use dotenvy::dotenv;
@@ -7,7 +7,7 @@ use env_logger::Env;
 use std::env;
 
 use crate::middleware::my_middleware;
-use crate::routes::game::create_game;
+use crate::routes::game::{change_game_status, create_game, get_game};
 use crate::routes::user::{get_user_data, sign_in, sign_up};
 
 use crate::utils::{get_health, not_found};
@@ -35,9 +35,23 @@ async fn main() -> Result<()> {
                 web::scope("/api/v1")
                     .service(web::resource("/signin").route(post().to(sign_in)))
                     .service(web::resource("/signup").route(post().to(sign_up)))
-                    .wrap(from_fn(my_middleware))
-                    .service(web::resource("/game").route(post().to(create_game)))
-                    .service(web::resource("/data").route(get().to(get_user_data)))
+                    // protected sub-scope
+                    .service(
+                        web::scope("")
+                            .wrap(from_fn(my_middleware))
+                            .service(
+                                web::resource("/game")
+                                    .route(put().to(change_game_status))
+                                    .route(post().to(create_game))
+                                    .route(get().to(get_game)),
+                            )
+                            .service(
+                                web::resource("/game/{id}")
+                                    .route(put().to(change_game_status))
+                                    .route(get().to(get_game)),
+                            )
+                            .service(web::resource("/data").route(get().to(get_user_data))),
+                    )
                     .app_data(web::Data::new(store.clone())),
             )
             .default_service(web::route().to(not_found))
